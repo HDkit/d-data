@@ -11,16 +11,6 @@ public sealed class DocumentsController(InMemoryDocumentStore store) : Controlle
     [HttpGet]
     public ActionResult<IEnumerable<Document>> GetAll([FromQuery] DocumentQuery query)
     {
-        if (query.MinSize is < 0 || query.MaxSize is < 0)
-        {
-            return BadRequest("MinSize and MaxSize must be zero or greater.");
-        }
-
-        if (query.CreatedFrom > query.CreatedTo || query.MinSize > query.MaxSize)
-        {
-            return BadRequest("The lower query bound cannot be greater than the upper bound.");
-        }
-
         var documents = store.GetAll()
             .Where(document =>
                 (string.IsNullOrWhiteSpace(query.Search) ||
