@@ -9,6 +9,7 @@ import {
   DocumentInput,
   getDocument,
   listDocuments,
+  SUPPORTED_FILE_FORMATS,
   updateDocument,
 } from "../lib/api";
 
@@ -125,7 +126,13 @@ export default function Home() {
     event.preventDefault();
     setSaving(true);
     setError("");
-    const payload = { ...form, size: Number(form.size), dateCreated: new Date(form.dateCreated).toISOString() };
+    const normalizedFormat = form.fileFormat.trim().replace(/^\./, "").toLowerCase();
+    if (!SUPPORTED_FILE_FORMATS.includes(normalizedFormat as typeof SUPPORTED_FILE_FORMATS[number])) {
+      setError("Choose a supported text, document, or image extension. GIF files are not supported.");
+      setSaving(false);
+      return;
+    }
+    const payload = { ...form, fileFormat: normalizedFormat, size: Number(form.size), dateCreated: new Date(form.dateCreated).toISOString() };
     try {
       if (editing) {
         await updateDocument(editing.id, payload);
@@ -185,7 +192,7 @@ export default function Home() {
           <label className="search-field"><span>⌕</span><input value={filters.search} onChange={(event) => updateFilter("search", event.target.value)} placeholder="Search name, author, or format" /></label>
           <input value={filters.name} onChange={(event) => updateFilter("name", event.target.value)} placeholder="Name contains" aria-label="Name contains" />
           <input value={filters.author} onChange={(event) => updateFilter("author", event.target.value)} placeholder="Author contains" aria-label="Author contains" />
-          <input value={filters.fileFormat} onChange={(event) => updateFilter("fileFormat", event.target.value)} placeholder="Format (e.g. PDF)" aria-label="File format" />
+          <select value={filters.fileFormat} onChange={(event) => updateFilter("fileFormat", event.target.value)} aria-label="File format"><option value="">All formats</option>{SUPPORTED_FILE_FORMATS.map((format) => <option key={format} value={format}>{format.toUpperCase()}</option>)}</select>
           <div className="filter-row"><label>Created from<input type="date" value={filters.createdFrom} onChange={(event) => updateFilter("createdFrom", event.target.value)} /></label><label>Created to<input type="date" value={filters.createdTo} onChange={(event) => updateFilter("createdTo", event.target.value)} /></label><label>Min bytes<input type="number" min="0" value={filters.minSize} onChange={(event) => updateFilter("minSize", event.target.value)} /></label><label>Max bytes<input type="number" min="0" value={filters.maxSize} onChange={(event) => updateFilter("maxSize", event.target.value)} /></label></div>
           <div className="filter-actions"><button className="primary-button small" type="submit">Apply filters</button><button className="text-button" type="button" onClick={clearFilters}>Clear</button></div>
         </form>

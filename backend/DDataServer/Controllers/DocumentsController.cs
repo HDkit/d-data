@@ -50,7 +50,7 @@ public sealed class DocumentsController(InMemoryDocumentStore store) : Controlle
             request.Author!.Trim(),
             request.DateCreated ?? DateTimeOffset.UtcNow,
             request.Size,
-            request.FileFormat!.Trim()));
+            DocumentFileFormats.Normalize(request.FileFormat!)));
 
         return CreatedAtAction(nameof(Get), new { id = document.Id }, document);
     }
@@ -70,7 +70,7 @@ public sealed class DocumentsController(InMemoryDocumentStore store) : Controlle
             request.Author!.Trim(),
             request.DateCreated ?? existing.DateCreated,
             request.Size,
-            request.FileFormat!.Trim());
+            DocumentFileFormats.Normalize(request.FileFormat!));
 
         store.Update(id, document);
         return NoContent();

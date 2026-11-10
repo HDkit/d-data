@@ -20,6 +20,12 @@ export type DocumentFilters = {
 
 export type DocumentInput = Omit<Document, "id">;
 
+export const SUPPORTED_FILE_FORMATS = [
+  "txt", "md", "markdown", "csv", "tsv", "json", "xml", "html", "htm", "rtf",
+  "pdf", "doc", "docx", "odt", "xls", "xlsx", "ods",
+  "jpg", "jpeg", "png", "webp", "bmp", "tif", "tiff", "svg", "avif",
+] as const;
+
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5087").replace(/\/$/, "");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

@@ -19,5 +19,6 @@ public sealed class CreateDocumentRequest
 
     [Required]
     [StringLength(50)]
+    [AllowedDocumentFileFormat]
     public string? FileFormat { get; init; }
 }
