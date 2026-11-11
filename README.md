@@ -23,8 +23,8 @@ Start the dashboard in another terminal:
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open <http://localhost:3000>. The dashboard uses `http://localhost:5087` by default. To use another API URL, copy `frontend/.env.example` to `frontend/.env.local` and change `NEXT_PUBLIC_API_BASE_URL`.
